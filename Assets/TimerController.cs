@@ -3,53 +3,79 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TimerController : MonoBehaviour {
+public class TimerController : MonoBehaviour
+{
+    private GameObject gameoverText;
+    GameObject TimeText;
+    public float totaltime;
+    int seconds;
+    int minutes;
 
-    //　トータル制限時間
-    private float totalTime;
-    //　制限時間（分）
-    [SerializeField]
-    private int minute;
-    //　制限時間（秒）
-    [SerializeField]
-    private float seconds;
-    //　前回Update時の秒数
-    private float oldSeconds;
-    private Text timerText;
+    GameObject Fripper1;
+    GameObject Fripper2;
+    GameObject Ball;
+
+    public bool timeup;
+
 
     void Start()
     {
-        totalTime = minute * 60 + seconds;
-        oldSeconds = 0f;
-        timerText = GetComponentInChildren<Text>();
+        this.timeup = false;
+
+        //テキスト呼び出し
+        this.TimeText = GameObject.Find("TimeText");
+        this.gameoverText = GameObject.Find("GameOverText");
+
+        //フリッパー呼び出し
+        this.Fripper1 = GameObject.Find("LeftFripper");
+        this.Fripper2 = GameObject.Find("RightFripper");
+
+        this.Ball = GameObject.Find("Ball");
     }
 
     void Update()
     {
-        //　制限時間が0秒以下なら何もしない
-        if (totalTime <= 0f)
-        {
-            return;
-        }
-        //　一旦トータルの制限時間を計測；
-        totalTime = minute * 60 + seconds;
-        totalTime -= Time.deltaTime;
+        // 毎フレーム毎に残り時間を減らしてく
+        this.totaltime -= Time.deltaTime;
 
-        //　再設定
-        minute = (int)totalTime / 60;
-        seconds = totalTime - minute * 60;
+        //ボールコントローラー呼び出し
+        BallCountroller ballcon = this.Ball.GetComponent<BallCountroller>();
+       
+        if (this.totaltime < 0)
+        {
+            if (ballcon.gameover == false)
+            {
+                this.timeup = true;
 
-        //　タイマー表示用UIテキストに時間を表示する
-        if ((int)seconds != (int)oldSeconds)
-        {
-            timerText.text = minute.ToString("00") + ":" + ((int)seconds).ToString("00");
+                this.gameoverText.GetComponent<Text>().text = "Time Up";
+
+                //フリッパー付属スクリプト呼び出しと変数変更PC
+                FripperController fripper1 = this.Fripper1.GetComponent<FripperController>();
+                fripper1.gameplay = false;
+
+                FripperController fripper2 = this.Fripper2.GetComponent<FripperController>();
+                fripper2.gameplay = false;
+
+                //フリッパー付属スクリプト呼び出しと変数変更Android
+                TouchSystem fripper11 = this.Fripper1.GetComponent<TouchSystem>();
+                fripper11.gameplay = false;
+
+                TouchSystem fripper22 = this.Fripper2.GetComponent<TouchSystem>();
+                fripper22.gameplay = false;
+            }
+
         }
-        oldSeconds = seconds;
-        //　制限時間以下になったらコンソールに『制限時間終了』という文字列を表示する
-        if (totalTime <= 0f)
+        else
         {
-            Debug.Log("制限時間終了");
+            // timeを文字列に変換したものをテキストに表示する
+            minutes = (int)totaltime / 60;
+            seconds = (int)totaltime - minutes * 60;
+
+            
+            this.TimeText.GetComponent<Text>().text = this.minutes.ToString("00") +":" + this.seconds.ToString("00");
         }
+
+
     }
 }
 
