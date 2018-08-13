@@ -47,7 +47,7 @@ public class TimerController : MonoBehaviour
             {
                 this.timeup = true;
 
-                this.gameoverText.GetComponent<Text>().text = "Time Up";
+                this.gameoverText.GetComponent<Text>().text = "Game Clear";
 
                 //フリッパー付属スクリプト呼び出しと変数変更PC
                 FripperController fripper1 = this.Fripper1.GetComponent<FripperController>();
@@ -62,6 +62,10 @@ public class TimerController : MonoBehaviour
 
                 TouchSystem fripper22 = this.Fripper2.GetComponent<TouchSystem>();
                 fripper22.gameplay = false;
+
+                //retry
+                CanvasController.SetActive("RetryButton", true);
+
             }
 
         }

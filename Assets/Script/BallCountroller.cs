@@ -20,6 +20,10 @@ public class BallCountroller : MonoBehaviour {
     //ボール落ちたか
     public bool gameover;
 
+    //canvasアクセス箱
+    
+    GameObject RetryButton;
+
     // Use this for initialization
     void Start () {
         //シーン中のGameOverTextオブジェクトを取得
@@ -33,6 +37,10 @@ public class BallCountroller : MonoBehaviour {
         this.Timetext = GameObject.Find("TimeText");
 
         this.gameover = false;
+
+        //Canvas呼び出し
+        
+        this.RetryButton = GameObject.Find("RetryButton");
 
     }
 
@@ -67,6 +75,10 @@ public class BallCountroller : MonoBehaviour {
 
                    TouchSystem fripper22 = this.Fripper2.GetComponent<TouchSystem>();
                    fripper22.gameplay = false;
+
+                    //retry
+                    
+                    CanvasController.SetActive("RetryButton", true);
                 }
 
             }
